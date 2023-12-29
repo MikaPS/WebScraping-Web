@@ -1,177 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>Web Scraping</title>
-</head>
+  </head>
 
-<body style="color:white;background-color:#014675;">
-    <h1 style="text-align: center;">Web Scraping Tool</h1>
-    <div style="display: flex;">
-        <div style="flex: 0.9; padding: 15px; border: 1px solid #c6921a; border-radius: 20px;">
-            <p> Select appliance type: </p>
-            <select id="appliancetype" style="width: 400px">
-                <option value="Refrigerators">Refrigerators</option>
-                <option value="Room AC">Room AC</option>
-                <option value="Central AC">Central AC</option>
-                <option value="Portable AC">Portable AC</option>
-                <option value="Vented Gas&Oil Heaters">Vented Gas&Oil Heaters</option>
-                <option value="Water Heaters">Water Heaters</option>
-                <option value="Pool Heaters">Pool Heaters</option>
-                <option value="Plumbing Fittings">Plumbing Fittings</option>
-                <option value="Plumbing Fixtures">Plumbing Fixtures</option>
-                <option value="Fluorescent Lamp Ballasts">Fluorescent Lamp Ballasts</option>
-                <option value="Lamps">Lamps</option>
-                <option value="Emergency Lighthing">Emergency Lighthing</option>
-                <option value="Traffic Signal Moudles">Traffic Signal Moudles</option>
-                <option value="Luminaires">Luminaires</option>
-                <option value="Dishwashers">Dishwashers</option>
-                <option value="Clothes Washers">Clothes Washers</option>
-                <option value="Clothes Dryers">Clothes Dryers</option>
-                <option value="Cooking Products">Cooking Products</option>
-                <option value="Electric Motors&Compressors">Electric Motors&Compressors</option>
-                <option value="Distribution Transformers">Distribution Transformers</option>
-                <option value="External Power Supplies">External Power Supplies</option>
-                <option value="Computers">Computers</option>
-                <option value="Battery Charger Systems">Battery Charger Systems</option>
-                <option value="Landscape Irrigation Eqmt">Landscape Irrigation Eqmt</option>
-                <option value="Other">Other</option>
-            </select>
-            <p> Enter File Name (default name: amazon_data.csv): </p>
-            <input type="text" id="filenamebox" placeholder="amazon_data.csv" style="width: 400px">
-            <p> Enter URL: </p>
-            <input type="text" id="urlbox" placeholder="Enter URL" style="width: 400px">
-            <br> <br>
-            <button onclick="clickedSumbitButton()">Submit</button>
-            <button onclick="clickedDownloadButton()">Download</button>
-            <br>
-            <progress id="progressbar" value="0" max="200" style="width: 400px"></progress>
-            <br> <br> <!-- <p id="helpmessage">Enter the required fields, and then click submit!</p> -->
-            <div id="helpmessage"
-                style="width: 400px;height: 75px; background-color: #c6921a; border-radius: 20px; align-items: center; justify-content: center; display: flex;"
-                class="instructions_area">Enter the required fields, and then click submit!
-            </div>
-        </div>
-        <div style="margin-left: 20px;"> </div>
+  <body style="color: white; background-color: #014675">
+    <h1 style="text-align: center">Web Scraping Tool</h1>
+    <div style="display: flex">
+      <div
+        style="
+          flex: 0.9;
+          padding: 15px;
+          border: 1px solid #f1c063;
+          border-radius: 20px;
+        "
+      >
+        <p>Select appliance type:</p>
+        <select id="appliancetype" style="width: 400px">
+          <option value="Refrigerators">Refrigerators</option>
+          <option value="Room AC">Room AC</option>
+          <option value="Central AC">Central AC</option>
+          <option value="Portable AC">Portable AC</option>
+          <option value="Vented Gas&Oil Heaters">Vented Gas&Oil Heaters</option>
+          <option value="Water Heaters">Water Heaters</option>
+          <option value="Pool Heaters">Pool Heaters</option>
+          <option value="Plumbing Fittings">Plumbing Fittings</option>
+          <option value="Plumbing Fixtures">Plumbing Fixtures</option>
+          <option value="Fluorescent Lamp Ballasts">
+            Fluorescent Lamp Ballasts
+          </option>
+          <option value="Lamps">Lamps</option>
+          <option value="Emergency Lighthing">Emergency Lighthing</option>
+          <option value="Traffic Signal Moudles">Traffic Signal Moudles</option>
+          <option value="Luminaires">Luminaires</option>
+          <option value="Dishwashers">Dishwashers</option>
+          <option value="Clothes Washers">Clothes Washers</option>
+          <option value="Clothes Dryers">Clothes Dryers</option>
+          <option value="Cooking Products">Cooking Products</option>
+          <option value="Electric Motors&Compressors">
+            Electric Motors&Compressors
+          </option>
+          <option value="Distribution Transformers">
+            Distribution Transformers
+          </option>
+          <option value="External Power Supplies">
+            External Power Supplies
+          </option>
+          <option value="Computers">Computers</option>
+          <option value="Battery Charger Systems">
+            Battery Charger Systems
+          </option>
+          <option value="Landscape Irrigation Eqmt">
+            Landscape Irrigation Eqmt
+          </option>
+          <option value="Other">Other</option>
+        </select>
+        <p>Enter File Name (default name: amazon_data.csv):</p>
+        <input
+          type="text"
+          id="filenamebox"
+          placeholder="amazon_data.csv"
+          style="width: 400px"
+        />
+        <p>Enter URL:</p>
+        <input
+          type="text"
+          id="urlbox"
+          placeholder="Enter URL"
+          style="width: 400px"
+        />
+        <br />
+        <br />
+        <button onclick="clickedSumbitButton()">Submit</button>
+        <button onclick="clickedDownloadButton()">Download</button>
+        <br />
+        <progress
+          id="progressbar"
+          value="0"
+          max="200"
+          style="width: 400px"
+        ></progress>
+        <br />
+        <br />
         <div
-            style="flex: 0.9; padding: 10px; border: 1px solid #c6921a; border-radius: 20px; align-items: center; justify-content: flex-start; display: flex; flex-direction: column;">
-            <!-- Instructions -->
-            <br>
-            <button onclick=" clickedInstructionsButton()" id="instructions_button" style="display: flex;">Open
-                Instructions</button>
-            <p id="instructions_text"></p>
+          id="helpmessage"
+          style="
+            width: 400px;
+            height: 75px;
+            background-color: #c6921a;
+            border-radius: 20px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+          "
+          class="instructions_area"
+        >
+          Enter the required fields, and then click submit!
         </div>
+      </div>
+      <div style="margin-left: 20px"></div>
+      <div
+        style="
+          flex: 0.9;
+          padding: 10px;
+          border: 1px solid #f1c063;
+          border-radius: 20px;
+          align-items: center;
+          justify-content: flex-start;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <!-- Instructions -->
+        <br />
+        <button
+          onclick=" clickedInstructionsButton()"
+          id="instructions_button"
+          style="display: flex"
+        >
+          Open Instructions
+        </button>
+        <p id="instructions_text"></p>
+      </div>
     </div>
     <script>
-        let has_headers = 0;
-        let isDone = false;
-        let isValid = true;
-        let count_products = 4
-        let allData = "";
-        let filename = document.getElementById("filenamebox");
-        if (filename.value === undefined || filename.value === "") {
-            filename.value = "amazon_data.csv";
-        }
-        const progress = document.getElementById("progressbar");
-        const helpMessage = document.getElementById("helpmessage");
-        timeoutID = 0;
-        function clickedSumbitButton() {
-            isValid = true;
-            progress.value = 0;
-            clearTimeout(timeoutID);
-            isDone = false;
-            let selectedAppliance = document.getElementById("appliancetype").value;
+      let has_headers = 0;
+      let isDone = false;
+      let isValid = true;
+      let count_products = 4;
+      let allData = "";
+      let filename = document.getElementById("filenamebox");
+      if (filename.value === undefined || filename.value === "") {
+        filename.value = "amazon_data.csv";
+      }
+      const progress = document.getElementById("progressbar");
+      const helpMessage = document.getElementById("helpmessage");
+      timeoutID = 0;
+      function clickedSumbitButton() {
+        isValid = true;
+        progress.value = 0;
+        clearTimeout(timeoutID);
+        isDone = false;
+        let selectedAppliance = document.getElementById("appliancetype").value;
 
-            helpMessage.textContent = "Running... Please wait until we finish processing this URL before continuing";
-            const URLbox = document.getElementById("urlbox");
-            moveProgressBar();
-            fetch(`/call_function?appliance=${selectedAppliance}&filename=${filename}&url=${URLbox.value}&countproducts=${count_products}&has_headers=${has_headers}`)
-                .then(response => response.json())
-                .then(data => {
-                    const filevalues = data[0];
-                    const count = data[1];
-                    URLbox.value = "";
-                    if (count == "URLError" || filevalues == "not valid") {
-                        helpMessage.textContent = "Invalid URL. Please enter another URL and make sure it starts with https://";
-                        isValid = false;
-                        progress.value = 0;
-                    } if (isValid) {
-                        helpMessage.textContent = "Finished running. Please enter another URL or download the file."
-                        count_products = parseInt(count);
-                        isDone = true;
-                        allData += "\n" + filevalues;
-                        if (has_headers == 0) { has_headers = 1; }
-                    }
-                });
-        }
-
-        function clickedDownloadButton() {
-            // download file
-            const file = new Blob([allData], { type: 'text/csv' });
-            const fileinfo = URL.createObjectURL(file);
-            const a = document.createElement('a');
-            a.href = fileinfo;
-            a.download = filename.value;
-            a.click();
-            URL.revokeObjectURL(fileinfo);
-        }
-
-        function moveProgressBar() {
-            let progressMax = parseInt(progress.max);
-            let progressValue = parseInt(progress.value);
+        helpMessage.textContent =
+          "Running... Please wait until we finish processing this URL before continuing";
+        const URLbox = document.getElementById("urlbox");
+        moveProgressBar();
+        fetch(
+          `/call_function?appliance=${selectedAppliance}&filename=${filename}&url=${URLbox.value}&countproducts=${count_products}&has_headers=${has_headers}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const filevalues = data[0];
+            const count = data[1];
+            URLbox.value = "";
+            if (count == "URLError" || filevalues == "not valid") {
+              helpMessage.textContent =
+                "Invalid URL. Please enter another URL and make sure it starts with https://";
+              isValid = false;
+              progress.value = 0;
+            }
             if (isValid) {
-                if (!isDone) {
-                    if (progressValue < progressMax) {
-                        progress.value += 20;
-                    } else {
-                        progress.value = 0;
-                    }
-                }
-                else {
-                    progress.value = progressMax;
-                }
+              helpMessage.textContent =
+                "Finished running. Please enter another URL or download the file.";
+              count_products = parseInt(count);
+              isDone = true;
+              allData += "\n" + filevalues;
+              if (has_headers == 0) {
+                has_headers = 1;
+              }
             }
-            timeoutID = setTimeout(moveProgressBar, 1000);
+          });
+      }
+
+      function clickedDownloadButton() {
+        // download file
+        const file = new Blob([allData], { type: "text/csv" });
+        const fileinfo = URL.createObjectURL(file);
+        const a = document.createElement("a");
+        a.href = fileinfo;
+        a.download = filename.value;
+        a.click();
+        URL.revokeObjectURL(fileinfo);
+      }
+
+      function moveProgressBar() {
+        let progressMax = parseInt(progress.max);
+        let progressValue = parseInt(progress.value);
+        if (isValid) {
+          if (!isDone) {
+            if (progressValue < progressMax) {
+              progress.value += 20;
+            } else {
+              progress.value = 0;
+            }
+          } else {
+            progress.value = progressMax;
+          }
         }
+        timeoutID = setTimeout(moveProgressBar, 1000);
+      }
 
-        let isInstructionShown = false;
-        function clickedInstructionsButton() {
-            isInstructionShown = !isInstructionShown;
-            let instructions_button = document.getElementById("instructions_button");
-            let instructions_text = document.getElementById("instructions_text");
+      let isInstructionShown = false;
+      function clickedInstructionsButton() {
+        isInstructionShown = !isInstructionShown;
+        let instructions_button = document.getElementById(
+          "instructions_button"
+        );
+        let instructions_text = document.getElementById("instructions_text");
 
-            if (isInstructionShown) {
-                instructions_button.textContent = "Close Instructions";
-                instructions_text.innerHTML = "This page helps you get information from Amazon products faster!" + "<div><br>" +
-                    "APPLIANCE TYPE:" + "<div>" +
-                    "Make sure to select the correct appliance type from the selector." + "<div>" +
-                    "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." + "<div>" +
-                    "However, some have additional, specific details. For examples, 'lamps', also have info about the bulb shape, lumens, etc." + "<div><br>" +
-                    "FILE NAME: " + "<div>" +
-                    "- The default name is amazon_data.csv" + "<div>" +
-                    "- Feel free to change it. For example, you can type in 'lamp_research' or 'lamp_research.csv'. All files would be .csv at the end." + "<div><br>" +
-                    "URL: " + "<div>" +
-                    "Copy/paste the full URL (should start with https://)" + "<div><br>" +
-                    "BUTTONS: " + "<div>" +
-                    "- SUBMIT: after entering all the fields, clicking submit would gather all the details from the page and would start a progress bar" + "<div>" +
-                    "- After finishing one link, a message would appear, prompting you to enter another link if needed." + "<div>" +
-                    "- DOWNLOAD - when you're done, click it to receieve the file with all the information." + "<div><br>" +
-                    "* The program runs without a human supervision, and sometimes mistakes could occur, if something seems wrong, make sure to double check the Amazon page.";
-                ;
-            }
-            else {
-                instructions_button.textContent = "Open Instructions";
-                instructions_text.innerHTML = "";
-            }
-
-
+        if (isInstructionShown) {
+          instructions_button.textContent = "Close Instructions";
+          instructions_text.innerHTML =
+            "This page helps you get information from Amazon products faster!" +
+            "<div><br>" +
+            "APPLIANCE TYPE:" +
+            "<div>" +
+            "Make sure to select the correct appliance type from the selector." +
+            "<div>" +
+            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+            "<div>" +
+            "However, some have additional, specific details. For examples, 'lamps', also have info about the bulb shape, lumens, etc." +
+            "<div><br>" +
+            "FILE NAME: " +
+            "<div>" +
+            "- The default name is amazon_data.csv" +
+            "<div>" +
+            "- Feel free to change it. For example, you can type in 'lamp_research' or 'lamp_research.csv'. All files would be .csv at the end." +
+            "<div><br>" +
+            "URL: " +
+            "<div>" +
+            "Copy/paste the full URL (should start with https://)" +
+            "<div><br>" +
+            "BUTTONS: " +
+            "<div>" +
+            "- SUBMIT: after entering all the fields, clicking submit would gather all the details from the page and would start a progress bar" +
+            "<div>" +
+            "- After finishing one link, a message would appear, prompting you to enter another link if needed." +
+            "<div>" +
+            "- DOWNLOAD - when you're done, click it to receieve the file with all the information." +
+            "<div><br>" +
+            "* The program runs without a human supervision, and sometimes mistakes could occur, if something seems wrong, make sure to double check the Amazon page.";
+        } else {
+          instructions_button.textContent = "Open Instructions";
+          instructions_text.innerHTML = "";
         }
-
-
+      }
     </script>
-</body>
-
-
+  </body>
 </html>
