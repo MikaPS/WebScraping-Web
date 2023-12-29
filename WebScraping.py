@@ -3237,15 +3237,13 @@ data = [
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15"
         ]
 
-# csvfile = None
 # Use a "User Agent" so the computer would register as a human
-# Added a Python library that creates a random user agent everytime the program runs, stimulating different devices each time
-# user_agent = UserAgent(use_cache_server=False)
-# random_user_agent = user_agent.random # check getRandom 
-# random_user_agent = generate_user_agent()
+# Data includes 3000+ variations of user agents so we can select a random user agent everytime the program runs, stimulating different devices and browsers 
+# The list includes users from: 
+    # https://github.com/fake-useragent/fake-useragent/blob/master/src/fake_useragent/data/browsers.json
+    # https://github.com/THAVASIGTI/pyuser_agent/blob/master/pyuser_agent/store_dump.json
+
 random_user_agent = random.choice(data)
-# Didnt get all the info: Mozilla/5.0 (X11; U; Linux i686 (x86_64); en-US; rv:1.8.0.6) Gecko/20060728 SUSE/1.5.0.6-1.2 Firefox/1.5.0.6
-# worked:               : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0
 HEADERS = {
     'Cache-Control': 'no-cache',
     'content-type': 'text/html;charset=UTF-8',
@@ -3304,13 +3302,13 @@ def get_data_from_table(table, table_data):
         # Second table format doesn't have th
         else:
             for c in col2:
-                leftValues = c.find("span", attrs={"class": "a-size-base a-text-bold"})  # value of the second col
-                if leftValues:
-                    leftVal = leftValues.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
-                rightValues = c.find("span", attrs={"class": "a-size-base po-break-word"})
-                if rightValues:
-                    rightVal = rightValues.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
-                specific_data_from_table(table_data, leftVal, rightVal)
+                left_values = c.find("span", attrs={"class": "a-size-base a-text-bold"})  # value of the second col
+                if left_values:
+                    left_val = left_values.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
+                right_values = c.find("span", attrs={"class": "a-size-base po-break-word"})
+                if right_values:
+                    right_val = right_values.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
+                specific_data_from_table(table_data, left_val, right_val)
     
 # Using the values from handle_csv, returns the price
 def price(item_convert_to_html):
@@ -3332,6 +3330,7 @@ def for_sale_in_ca(item_convert_to_html):
         # Error messages have many variations, but most of them start with "This item cannot be delivered..."
         # Checking if the error starts with the word "This" to make sure it's a delivery error
         if item_ca.text.strip()[0:4] == "This":
+            print("error is starting with this, setting item_ca to no: ", item_ca.text.strip())
             item_ca = "No"
         else:
             item_ca = "Yes"
@@ -3400,21 +3399,15 @@ def special_appliances(table_data, type, isNum):
         return remove_non_ascii(table_data[type])
     return "N/A"
 
-def isFileEmpty(hasHeaders):
-    if (hasHeaders == 1):
+def isFileEmpty(has_headers):
+    if (has_headers == 1):
         return False
     return True
-    # csvfile.seek(0)
-    # first_line = csvfile.readline()
-    # # print("first line: ", first_line)
-    # if len(first_line.strip()) == 0:
-    #     return True
-    # return False
+
 # After getting a URL, we can get values from the page
 all_data = {}
 sent_data = [[],[]]
-def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
-    print("in webscapring, hasHEaders: ", hasHeaders, " type ", type(hasHeaders))
+def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers):
     if (isFirstAttempt):
         count_products += 1
         all_data["item_model_number"] = "N/A"
@@ -3472,7 +3465,9 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
     # --- For Sale in CA ---
     item_ca = for_sale_in_ca(item_convert_to_html)
     if (all_data["price"] == "N/A"):
+        print("price is N/A, setting item_ca to N/A")
         item_ca = "N/A"
+    print("is for sale in CA? ", item_ca)
     
     # --- PRODUCT INFORMATION DETAILS ---
     # Convert specification table into a dict     
@@ -3518,11 +3513,6 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
     table3 = item_convert_to_html.find_all("table", attrs={"class": "a-keyvalue prodDetTable", "role":"presentation"})
     for t in table3:
         get_data_from_table(t, table_data)
-    # print("----TABLE----\n", table_data, "\n\n")
-
-    # print("user agent: ", random_user_agent)
-    # print(table_data)
-    # print("----TABLE----\n", table_data, "\n\n")
     if (all_data["item_mfr"] == "N/A"):
         item_mfr = special_appliances(table_data, "Manufacturer", False)
         all_data["item_mfr"] = item_mfr
@@ -3568,12 +3558,10 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
     # Special Features for Specific Appliance Types
     sent_text = ""
     # --- ROOM AC ---
-    # isWrittenTo = False
     if item_appliance.lower() == "room ac":
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # isWrittenTo = True
         item_volt = special_appliances(table_data, "Voltage", True)
         item_watt = special_appliances(table_data, "Wattage", True)
         item_cooling = special_appliances(table_data, "Cooling Power", False)
@@ -3582,26 +3570,20 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_current}, {item_cooling}, {item_watt}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     # --- CENTRAL AC ---
     elif item_appliance.lower() == "central ac":
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Voltage,Energy Efficiency Ration (EER),Electric Input @95° (Watts),Cooling Capacity @95° (BTUH),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # csvfile.write("Model #, Manufacturing Company, Brand, Ship from, Sold by, Appliance Type, Voltage, Energy Efficiency Ration (EER), Electric Input @95° (Watts), Cooling Capacity @95° (BTUH), Certified to MAEDbS?, ASIN, Retail Price, Retail Link, Notes, For Sale in CA")
-            # isWrittenTo = True
         item_volt = special_appliances(table_data, "Voltage", True)
         item_watt = special_appliances(table_data, "Wattage", True)
         item_capacity = special_appliances(table_data, "Cooling Power", True)
         item_seer = special_appliances(table_data, "Seasonal Energy Efficiency Ratio (SEER)", True)
         if isFirstAttempt == False:
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_seer}, {item_watt}, {item_capacity}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
-        # print("\n\nfinal data set: \n", sent_text, "\n")    
-        # csvfile.write(f"\n{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_seer}, {item_watt}, {item_capacity}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}")
     # --- WATER HEATERS ---
     elif item_appliance.lower() == "water heaters":
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Volume,Max gal/min,Input Rating,Annual Fossil Fuel Energy Consumption,Certified to MAEDbS,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # csvfile.write("Model #, Manufacturing Company, Brand, Ship from, Sold by, Appliance Type, Rated Volume, Max gal/min, Input Rating, Annual Fossil Fuel Energy Consumption, Certified to MAEDbS, ASIN, Retail Price, Retail Link, Notes, For Sale in CA")
-            # isWrittenTo = True
         item_volume = special_appliances(table_data, "Size", False) # rated volume, in gallons
         item_consumption = special_appliances(table_data, "Flow Rate", True) # Max gal/min
         if (item_consumption == "N/A"):
@@ -3615,32 +3597,26 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volume}, {item_consumption}, {item_input}, {item_fossil}, {item_note}, {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     # --- PLUMBING FITTINGS ---
     elif item_appliance.lower() == "plumbing fittings":
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Series Name,Appliance Type,Advertised Flow Rate,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # csvfile.write("Model #, Manufacturing Company, Brand, Ship from, Sold by, Series Name, Appliance Type, Advertised Flow Rate, Certified to MAEDbS?, ASIN, Retail Price, Retail Link, Notes, For Sale in CA")
-            # isWrittenTo = True
         item_series = "N/A" # Series name (if applicable)
         item_flow_rate = special_appliances(table_data, "Flow Rate", True) # Advertised Flow Rate
         if isFirstAttempt == False:
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_series}, {item_appliance.title()}, {item_flow_rate}, ,{all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     # --- PLUMBING FIXTURES ---
     elif item_appliance.lower() == "plumbing fixtures":
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Flow Rate (GPF),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # csvfile.write("Model #, Manufacturing Company, Brand, Ship from, Sold by, Appliance Type, Flow Rate (GPF), Certified to MAEDbS?, ASIN, Retail Price, Retail Link, Notes, For Sale in CA")
-            # isWrittenTo = True
         item_flow_rate = special_appliances(table_data, "Water Consumption", True) # Flow Rate (GPF)
         if isFirstAttempt == False:
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_flow_rate}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     # --- LAMPS ---
     elif item_appliance.lower() == "lamps":        
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Base Type,Bulb Shape,Lumens,Watts,Color Term,Life,CRI,Lumens/watt,Efficacy,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title
-            # csvfile.write("Model #, Manufacturing Company, Brand, Ship from, Sold by, Appliance Type, Base Type, Bulb Shape, Lumens, Watts, Color Term, Life, CRI, Lumens/watt, Efficacy, Certified to MAEDbS?, ASIN, Retail Price, Retail Link, Notes, For Sale in CA")
-            # isWrittenTo = True
         lamp_base = special_appliances(table_data, "Base Material", False)
         lamp_bulb = special_appliances(table_data, "Bulb Shape Size", False)
         lamp_lum = special_appliances(table_data, "Luminous Flux", True)
@@ -3668,19 +3644,15 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, hasHeaders):
         if isFirstAttempt == False:
            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {lamp_base}, {lamp_bulb}, {lamp_lum}, {lamp_watt}, {lamp_temp}, {lamp_life}, {lamp_cri}, {lamp_lum_wat}, {lamp_compliance}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     else: 
-        if isFileEmpty(hasHeaders):
+        if isFileEmpty(has_headers):
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             sent_text += title   
-            # isWrittenTo = True
         if isFirstAttempt == False:
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, ,{all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
     item_webpage.close()
     if (isFirstAttempt):
         sleep(0.5)
-        print("in is first attempt")
-        return handle_csv(URL, item_appliance, count_products, False, hasHeaders)
-        # return "not valid", 0
+        return handle_csv(URL, item_appliance, count_products, False, has_headers)
     else:   
-        print("sent text: ", sent_text, " count products: ", count_products)
         return sent_text, count_products
 

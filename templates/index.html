@@ -50,7 +50,7 @@
     <p id="helpmessage">Enter the required fields, and then click submit!</p>
 
     <script>
-        let hasHeaders = 0;
+        let has_headers = 0;
         let isDone = false;
         let isValid = true;
         let count_products = 4
@@ -72,14 +72,11 @@
             helpMessage.textContent = "Running... Please wait until we finish processing this URL before continuing";
             const URLbox = document.getElementById("urlbox");
             moveProgressBar();
-            console.log("In index.html, hasHeaders: ", hasHeaders)
-            fetch(`/call_function?appliance=${selectedAppliance}&filename=${filename}&url=${URLbox.value}&countproducts=${count_products}&hasHeaders=${hasHeaders}`)
+            fetch(`/call_function?appliance=${selectedAppliance}&filename=${filename}&url=${URLbox.value}&countproducts=${count_products}&has_headers=${has_headers}`)
                 .then(response => response.json())
                 .then(data => {
                     const filevalues = data[0];
                     const count = data[1];
-                    console.log("file values: ", filevalues)
-                    console.log("count: ", count)
                     URLbox.value = "";
                     if (count == "URLError" || filevalues == "not valid") {
                         helpMessage.textContent = "Invalid URL. Please enter another URL and make sure it starts with https://";
@@ -90,19 +87,17 @@
                         count_products = parseInt(count);
                         isDone = true;
                         allData += "\n" + filevalues;
-                        if (hasHeaders == 0) { hasHeaders = 1; }
+                        if (has_headers == 0) { has_headers = 1; }
                     }
                 });
         }
 
         function clickedDownloadButton() {
             // download file
-            console.log("All data: ", allData)
             const file = new Blob([allData], { type: 'text/csv' });
             const fileinfo = URL.createObjectURL(file);
             const a = document.createElement('a');
             a.href = fileinfo;
-            console.log("here: ", filename.value);
             a.download = filename.value;
             a.click();
             URL.revokeObjectURL(fileinfo);

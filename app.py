@@ -8,13 +8,13 @@ def index():
 
 @app.route('/call_function', methods=['GET'])
 def call_function():
-    hasHeaders = int(request.args.get('hasHeaders'))
+    has_headers = int(request.args.get('has_headers'))
     appliance_type = request.args.get('appliance')
     count_products = int(request.args.get('countproducts'))
     url = request.args.get('url')
     if (url[0:8] != "https://"): 
         return make_response(jsonify(["URLError", "URLError"]))
-    data, result = handle_csv(url, appliance_type, count_products, True, hasHeaders)
+    data, result = handle_csv(url, appliance_type, count_products, True, has_headers)
     # save values to a file
     response = make_response(jsonify([data, result]))
     return response
