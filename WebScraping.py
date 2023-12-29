@@ -3242,16 +3242,18 @@ data = [
 # The list includes users from: 
     # https://github.com/fake-useragent/fake-useragent/blob/master/src/fake_useragent/data/browsers.json
     # https://github.com/THAVASIGTI/pyuser_agent/blob/master/pyuser_agent/store_dump.json
+def set_headers(user_agent):
+    return {
+        'content-type': 'text/html;charset=UTF-8',
+        'Accept-Encoding': 'gzip, deflate, sdch',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'User-Agent': user_agent,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    }
+# use 'X-Forwarded-For':'xxx.xxx.x.x' of a CA address
 
 random_user_agent = random.choice(data)
-HEADERS = {
-    'Cache-Control': 'no-cache',
-    'content-type': 'text/html;charset=UTF-8',
-    'Accept-Encoding': 'gzip, deflate, sdch',
-    'Accept-Language': 'en-US,en;q=0.8',
-    'User-Agent': random_user_agent,
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-}  
+HEADERS = set_headers(random_user_agent)
 
 # Removes characters in non recognizable fonts and commas (because that signifies new cell in CSV)
 def remove_non_ascii(text):
@@ -3266,9 +3268,9 @@ def remove_non_ascii(text):
 def get_num_from_str(s):
     num_str = ""
     for i in s:
-        if i.isdigit() or i == '.':
+        if ((i.isdigit() or i == '.') and i != ",") :
             num_str = num_str + i
-    return remove_non_ascii(num_str)
+    return unidecode(num_str)
 
 def specific_data_from_table(table_data, val1, val2):
     if ("Chipset Brand" not in val1) and ("Processor Brand" not in val1) and ("Brand" in val1):
@@ -3330,7 +3332,6 @@ def for_sale_in_ca(item_convert_to_html):
         # Error messages have many variations, but most of them start with "This item cannot be delivered..."
         # Checking if the error starts with the word "This" to make sure it's a delivery error
         if item_ca.text.strip()[0:4] == "This":
-            print("error is starting with this, setting item_ca to no: ", item_ca.text.strip())
             item_ca = "No"
         else:
             item_ca = "Yes"
@@ -3424,15 +3425,7 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     # Use a "User Agent" so the computer would register as a human
     # Added a Python library that creates a random user agent everytime the program runs, stimulating different devices each time
     random_user_agent = random.choice(data)
-    HEADERS = {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'content-type': 'text/html;charset=UTF-8',
-        'Accept-Encoding': 'gzip, deflate, sdch',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'User-Agent': random_user_agent,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    }  
+    HEADERS = set_headers(random_user_agent)
 
     session.headers.update(HEADERS)
     # Wants to switch the connection every 5 products:
@@ -3442,15 +3435,8 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         random_user_agent = random.choice(data)
         count_products = 0
         # Headers for request
-        HEADERS = {
-            'content-type': 'text/html;charset=UTF-8',
-            'Accept-Encoding': 'gzip, deflate, sdch',
-            'Accept-Language': 'en-US,en;q=0.8',
-            'User-Agent': random_user_agent,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        }  
+        HEADERS = set_headers(random_user_agent)
         session.headers.update(HEADERS)
-
 
     # Getting data from the item's page in Bytes
     item_webpage = session.get(URL, allow_redirects=True)
