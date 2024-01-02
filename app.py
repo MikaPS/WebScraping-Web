@@ -14,9 +14,9 @@ def call_function():
     url = request.args.get('url')
     if (url[0:8] != "https://"): 
         return make_response(jsonify(["URLError", "URLError"]))
-    data, result = handle_csv(url, appliance_type, count_products, True, has_headers)
+    data, result, title = handle_csv(url, appliance_type, count_products, True, has_headers)
     # save values to a file
-    response = make_response(jsonify([data, result]))
+    response = make_response(jsonify([data, result, title]))
     return response
 
 if __name__ == '__main__':

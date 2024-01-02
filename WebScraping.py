@@ -3323,6 +3323,14 @@ def price(item_convert_to_html):
         item_price = "N/A"
     return item_price
 
+def get_title(item_convert_to_html):
+    try:
+        item_title = item_convert_to_html.find("span", attrs={"id": "productTitle"})
+        item_title = item_title.text.strip()
+    except AttributeError:
+        item_title = "N/A"
+    return remove_non_ascii(item_title)
+
 # Using the values from handle_csv, returns if the item is for sale in CA
 def for_sale_in_ca(item_convert_to_html):
     item_ca = "N/A"
@@ -3362,7 +3370,6 @@ def asin(using_detail_bullet_list, item_convert_to_html, table_data):
             item_asin = item_asin.get('value')
     if item_asin == None: 
         item_asin = "N/A"
-    # print("asin ", item_asin)
     return remove_non_ascii(item_asin)
 
 def ship_from_sold_by(item_convert_to_html):
@@ -3407,8 +3414,17 @@ def isFileEmpty(has_headers):
 
 # After getting a URL, we can get values from the page
 all_data = {}
+prod_title = ""
 sent_data = [[],[]]
 def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers):
+    # Sessions help to maintain a consistent user expereinces. It saves cookies across requests, making it more efficent to connect to Amazon
+    session = requests.Session()
+    # Use a "User Agent" so the computer would register as a human
+    # Added a Python library that creates a random user agent everytime the program runs, stimulating different devices each time
+    random_user_agent = random.choice(data)
+    HEADERS = set_headers(random_user_agent)
+
+    session.headers.update(HEADERS)
     if (isFirstAttempt):
         count_products += 1
         all_data["item_model_number"] = "N/A"
@@ -3419,24 +3435,14 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         all_data["price"] = "N/A"
         all_data["asin"] = "N/A"
         all_data["price_per_unit"] = "N/A"
-
-    # Sessions help to maintain a consistent user expereinces. It saves cookies across requests, making it more efficent to connect to Amazon
-    session = requests.Session()
-    # Use a "User Agent" so the computer would register as a human
-    # Added a Python library that creates a random user agent everytime the program runs, stimulating different devices each time
-    random_user_agent = random.choice(data)
-    HEADERS = set_headers(random_user_agent)
-
-    session.headers.update(HEADERS)
-    # Wants to switch the connection every 5 products:
-    if (count_products == 5):
-        session.close()
-        session = requests.Session()
-        random_user_agent = random.choice(data)
-        count_products = 0
-        # Headers for request
-        HEADERS = set_headers(random_user_agent)
-        session.headers.update(HEADERS)
+        # Wants to switch the connection every 5 products:
+        if (count_products % 5 == 0):
+            session.close()
+            session = requests.Session()
+            random_user_agent = random.choice(data)
+            # Headers for request
+            HEADERS = set_headers(random_user_agent)
+            session.headers.update(HEADERS)
 
     # Getting data from the item's page in Bytes
     item_webpage = session.get(URL, allow_redirects=True)
@@ -3448,12 +3454,12 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         item_price = price(item_convert_to_html)
         all_data["price"] = item_price
 
+    prod_title = get_title(item_convert_to_html)
+    
     # --- For Sale in CA ---
     item_ca = for_sale_in_ca(item_convert_to_html)
     if (all_data["price"] == "N/A"):
-        print("price is N/A, setting item_ca to N/A")
         item_ca = "N/A"
-    print("is for sale in CA? ", item_ca)
     
     # --- PRODUCT INFORMATION DETAILS ---
     # Convert specification table into a dict     
@@ -3640,5 +3646,5 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         sleep(0.5)
         return handle_csv(URL, item_appliance, count_products, False, has_headers)
     else:   
-        return sent_text, count_products
+        return sent_text, count_products, prod_title
 

@@ -51,22 +51,34 @@
                 </option>
                 <option value="Other">Other</option>
             </select>
-            <p>Enter File Name (default name: amazon_data.csv):</p>
-            <input type="text" id="filenamebox" placeholder="amazon_data.csv" style="width: 400px" />
+            <p>Enter File Name (default name: amazon data.csv):</p>
+            <input type="text" id="filenamebox" placeholder="amazon data.csv" style="width: 400px" />
             <p>Enter URL:</p>
             <input type="text" id="urlbox" placeholder="Enter URL" style="width: 400px" />
             <br />
             <br />
             <button onclick="clickedSumbitButton()">Submit</button>
-            <button onclick="clickedDownloadButton()">Download</button>
+            <button disabled id="download_button" onclick="clickedDownloadButton()">Download</button>
             <div><br></div>
             <progress id="progressbar" value="0" max="200" style="width: 400px; background-color: #4FA90E;"></progress>
             <div><br></div>
             <div id="helpmessage"
                 style="width: 400px; height: 75px; background-color: #c6921a; border-radius: 20px; align-items: center; justify-content: center; display: flex;"
                 class="instructions_area">
-                Enter the required fields, and then click submit!
+                Enter the required fields, and then click SUBMIT! After finishing all products, click download to get
+                the csv file.
             </div>
+        </div>
+        <div style="margin-left: 20px"></div>
+        <div
+            style="flex: 0.9; padding: 10px; border: 1px solid #f1c063; border-radius: 20px; align-items: center; justify-content: flex-start; display: flex; flex-direction: column;">
+            <!-- Names of products -->
+            <div style="flex-direction: row;  align-items: flex-start; justify-content: center; display: flex;">
+                <p> <b> Titles of Completed Products </b></p>
+                <div style="margin-left: 30px"></div>
+                <p id="products_count"> Count: 0 </p>
+            </div>
+            <p id="products_title" style="font-size: small;"></p>
         </div>
         <div style="margin-left: 20px"></div>
         <div
@@ -83,14 +95,18 @@
         let has_headers = 0;
         let isDone = false;
         let isValid = true;
-        let count_products = 4;
+        let count_products = 0;
         let allData = "";
+        let all_titles = "";
         let filename = document.getElementById("filenamebox");
         if (filename.value === undefined || filename.value === "") {
-            filename.value = "amazon_data.csv";
+            filename.value = "amazon data.csv";
         }
         const progress = document.getElementById("progressbar");
         const helpMessage = document.getElementById("helpmessage");
+        const titleText = document.getElementById("products_title");
+        const productsCountText = document.getElementById("products_count");
+
         timeoutID = 0;
         function clickedSumbitButton() {
             isValid = true;
@@ -110,6 +126,7 @@
                 .then((data) => {
                     const filevalues = data[0];
                     const count = data[1];
+                    const title = data[2];
                     URLbox.value = "";
                     if (count == "URLError" || filevalues == "not valid") {
                         helpMessage.textContent =
@@ -121,8 +138,15 @@
                         helpMessage.textContent =
                             "Finished running. Please enter another URL or download the file.";
                         count_products = parseInt(count);
+                        if (count_products >= 1) {
+                            const download_button = document.getElementById("download_button");
+                            download_button.removeAttribute("disabled");
+                        }
                         isDone = true;
                         allData += "\n" + filevalues;
+                        all_titles = title + "<br>" + "<br>" + all_titles;
+                        productsCountText.innerHTML = "Count: " + count_products;
+                        titleText.innerHTML = all_titles;
                         if (has_headers == 0) {
                             has_headers = 1;
                         }
@@ -131,6 +155,7 @@
         }
 
         function clickedDownloadButton() {
+            download_button.value = "regular";
             // download file
             const file = new Blob([allData], { type: "text/csv" });
             const fileinfo = URL.createObjectURL(file);
@@ -181,7 +206,7 @@
                     "<div><br>" +
                     "FILE NAME: " +
                     "<div>" +
-                    "- The default name is amazon_data.csv" +
+                    "- The default name is 'amazon data.csv'" +
                     "<div>" +
                     "- Feel free to change it. For example, you can type in 'lamp_research' or 'lamp_research.csv'. All files would be .csv at the end." +
                     "<div><br>" +
