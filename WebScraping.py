@@ -3455,7 +3455,9 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         print("GETTING PRICE")
         item_price = price(item_convert_to_html)
         all_data["price"] = item_price
-        print(all_data["price"])
+        if (isFirstAttempt == False):
+            print(all_data["price"])
+            print(item_webpage.content)
 
     if (all_data["prod_title"] == "N/A"):
         all_data["prod_title"] = get_title(item_convert_to_html)
