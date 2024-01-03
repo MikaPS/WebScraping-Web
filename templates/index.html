@@ -1,335 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Amazon Lead Research Assistant</title>
-</head>
+  </head>
 
-<body style="color: white; background-color: #014675">
-    <div id="upperarea" style="align-items: flex-start; justify-content: center; display: flex; flex-direction: row;">
-        <div style="flex: 0.1; padding: 15px;">
-            <input checked type="checkbox" id="hover_instructions" value="true">
-            <label for="hover_instructions"> Toggle hover instructions </label><br>
-        </div>
-        <div style="margin-left: 240px"></div>
-        <div style="flex: 0.9; padding: 10px;">
-            <h1 style="text-align: flex-start">Amazon Lead Research Assistant</h1>
-        </div>
+  <body style="color: white; background-color: #014675">
+    <div
+      id="upperarea"
+      style="
+        align-items: flex-start;
+        justify-content: center;
+        display: flex;
+        flex-direction: row;
+      "
+    >
+      <div style="flex: 0.1; padding: 15px">
+        <input checked type="checkbox" id="hover_instructions" value="true" />
+        <label for="hover_instructions"> Toggle hover instructions </label
+        ><br />
+      </div>
+      <div style="margin-left: 240px"></div>
+      <div style="flex: 0.9; padding: 10px">
+        <h1 style="text-align: flex-start">Amazon Lead Research Assistant</h1>
+      </div>
     </div>
     <div style="display: flex">
-        <div style="flex: 0.5; padding: 15px; border: 1px solid #f1c063; border-radius: 20px;">
-            <p id="appliance_text">Select an appliance type:</p>
-            <select id="appliancetype" style="width: 400px">
-                <option value="Refrigerators">Refrigerators</option>
-                <option value="Room AC">Room AC</option>
-                <option value="Central AC">Central AC</option>
-                <option value="Portable AC">Portable AC</option>
-                <option value="Vented Gas&Oil Heaters">Vented Gas&Oil Heaters</option>
-                <option value="Water Heaters">Water Heaters</option>
-                <option value="Pool Heaters">Pool Heaters</option>
-                <option value="Plumbing Fittings">Plumbing Fittings</option>
-                <option value="Plumbing Fixtures">Plumbing Fixtures</option>
-                <option value="Fluorescent Lamp Ballasts">
-                    Fluorescent Lamp Ballasts
-                </option>
-                <option value="Lamps">Lamps</option>
-                <option value="Emergency Lighthing">Emergency Lighthing</option>
-                <option value="Traffic Signal Moudles">Traffic Signal Moudles</option>
-                <option value="Luminaires">Luminaires</option>
-                <option value="Dishwashers">Dishwashers</option>
-                <option value="Clothes Washers">Clothes Washers</option>
-                <option value="Clothes Dryers">Clothes Dryers</option>
-                <option value="Cooking Products">Cooking Products</option>
-                <option value="Electric Motors&Compressors">
-                    Electric Motors&Compressors
-                </option>
-                <option value="Distribution Transformers">
-                    Distribution Transformers
-                </option>
-                <option value="External Power Supplies">
-                    External Power Supplies
-                </option>
-                <option value="Computers">Computers</option>
-                <option value="Battery Charger Systems">
-                    Battery Charger Systems
-                </option>
-                <option value="Landscape Irrigation Eqmt">
-                    Landscape Irrigation Eqmt
-                </option>
-                <option value="Other">Other</option>
-            </select>
-            <p id="url_text">Enter a URL of an Amazon product page:</p>
-            <input type="text" id="urlbox" placeholder="Enter a URL" style="width: 400px" />
-            <br />
-            <br />
-            <button id="process_button" onclick="clickedSumbitButton()">Process Product</button>
-            <div><br></div>
-            <progress id="progressbar" value="0" max="200" style="width: 400px; background-color: #4FA90E;"></progress>
-            <div><br></div>
-            <button disabled id="download_button" onclick="enterFileName()">Download</button>
-            <p style="display:none" id="askforfile">Enter File Name:</p>
-            <input type="hidden" id="filenamebox" placeholder="amazon data" style="width: 400px" />
-            <button style="display:none" id="actual_download" onclick="downloadFile()">Download File</button>
-            <div><br></div>
-            <div id="helpmessage"
-                style="background-color: #c6921a; padding: 10px; border-radius: 20px; align-items: center; justify-content: center; display: flex;">
-            </div>
+      <div
+        style="
+          flex: 0.5;
+          padding: 15px;
+          border: 1px solid #f1c063;
+          border-radius: 20px;
+        "
+      >
+        <p id="appliance_text">Select an appliance type:</p>
+        <select id="appliancetype" style="width: 400px">
+          <option value="Refrigerators">Refrigerators</option>
+          <option value="Room AC">Room AC</option>
+          <option value="Central AC">Central AC</option>
+          <option value="Portable AC">Portable AC</option>
+          <option value="Vented Gas&Oil Heaters">Vented Gas&Oil Heaters</option>
+          <option value="Water Heaters">Water Heaters</option>
+          <option value="Pool Heaters">Pool Heaters</option>
+          <option value="Plumbing Fittings">Plumbing Fittings</option>
+          <option value="Plumbing Fixtures">Plumbing Fixtures</option>
+          <option value="Fluorescent Lamp Ballasts">
+            Fluorescent Lamp Ballasts
+          </option>
+          <option value="Lamps">Lamps</option>
+          <option value="Emergency Lighthing">Emergency Lighthing</option>
+          <option value="Traffic Signal Moudles">Traffic Signal Moudles</option>
+          <option value="Luminaires">Luminaires</option>
+          <option value="Dishwashers">Dishwashers</option>
+          <option value="Clothes Washers">Clothes Washers</option>
+          <option value="Clothes Dryers">Clothes Dryers</option>
+          <option value="Cooking Products">Cooking Products</option>
+          <option value="Electric Motors&Compressors">
+            Electric Motors&Compressors
+          </option>
+          <option value="Distribution Transformers">
+            Distribution Transformers
+          </option>
+          <option value="External Power Supplies">
+            External Power Supplies
+          </option>
+          <option value="Computers">Computers</option>
+          <option value="Battery Charger Systems">
+            Battery Charger Systems
+          </option>
+          <option value="Landscape Irrigation Eqmt">
+            Landscape Irrigation Eqmt
+          </option>
+          <option value="Other">Other</option>
+        </select>
+        <p id="url_text">Enter a URL of an Amazon product page:</p>
+        <input
+          type="text"
+          id="urlbox"
+          placeholder="Enter a URL"
+          style="width: 400px"
+        />
+        <br />
+        <br />
+        <button id="process_button" onclick="clickedSumbitButton()">
+          Process Product
+        </button>
+        <div><br /></div>
+        <progress
+          id="progressbar"
+          value="0"
+          max="200"
+          style="width: 400px; background-color: #4fa90e"
+        ></progress>
+        <div><br /></div>
+        <button disabled id="download_button" onclick="enterFileName()">
+          Download
+        </button>
+        <p style="display: none" id="askforfile">Enter File Name:</p>
+        <input
+          type="hidden"
+          id="filenamebox"
+          placeholder="amazon data"
+          style="width: 400px"
+        />
+        <button
+          style="display: none"
+          id="actual_download"
+          onclick="downloadFile()"
+        >
+          Download File
+        </button>
+        <div><br /></div>
+        <div
+          id="helpmessage"
+          style="
+            background-color: #c6921a;
+            padding: 10px;
+            border-radius: 20px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+          "
+        ></div>
+      </div>
+      <div style="margin-left: 20px"></div>
+      <div
+        id="middlecol"
+        style="
+          flex: 0.9;
+          padding: 10px;
+          border: 1px solid #f1c063;
+          border-radius: 20px;
+          align-items: center;
+          justify-content: flex-start;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <!-- Names of products -->
+        <div
+          style="
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            display: flex;
+          "
+        >
+          <p><b> Links of Processed Products </b></p>
+          <div style="margin-left: 30px"></div>
+          <p id="products_count" style="align-items: flex-end">Count: 0</p>
         </div>
-        <div style="margin-left: 20px"></div>
-        <div id="middlecol"
-            style="flex: 0.9; padding: 10px; border: 1px solid #f1c063; border-radius: 20px; align-items: center; justify-content: flex-start; display: flex; flex-direction: column;">
-            <!-- Names of products -->
-            <div style="flex-direction: row;  align-items: flex-start; justify-content: center; display: flex;">
-                <p> <b> Links of Processed Products </b></p>
-                <div style="margin-left: 30px"></div>
-                <p id="products_count" style="align-items: flex-end;"> Count: 0 </p>
-            </div>
-            <p id="products_title" style="font-size: small;"></p>
-        </div>
+        <p id="products_title" style="font-size: small"></p>
+      </div>
     </div>
     <div style="margin-top: 20px"></div>
     <div
-        style="flex: 0.9; padding: 10px; border: 1px solid #f1c063; border-radius: 20px; align-items: center; justify-content: flex-start; display: flex; flex-direction: column;">
-        <!-- Instructions -->
-        <br />
-        <button onclick=" clickedInstructionsButton()" id="instructions_button" style="display: flex">
-            Open Instructions
-        </button>
-        <p id="instructions_text"></p>
+      style="
+        flex: 0.9;
+        padding: 10px;
+        border: 1px solid #f1c063;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: flex-start;
+        display: flex;
+        flex-direction: column;
+      "
+    >
+      <!-- Instructions -->
+      <br />
+      <button
+        onclick=" clickedInstructionsButton()"
+        id="instructions_button"
+        style="display: flex"
+      >
+        Open Instructions
+      </button>
+      <p id="instructions_text"></p>
     </div>
     <script>
-        let has_headers = 0;
-        let isDone = false;
-        let isValid = true;
-        let count_products = 0;
-        let allData = "";
-        let all_titles = "";
-        let prev_appliance = "";
+      let has_headers = 0;
+      let isDone = false;
+      let isValid = true;
+      let count_products = 0;
+      let allData = "";
+      let all_titles = "";
+      let prev_appliance = "";
 
-        const hover_instructions = document.getElementById("hover_instructions");
-        let isHoverOn = hover_instructions.checked;
+      const hover_instructions = document.getElementById("hover_instructions");
+      let isHoverOn = hover_instructions.checked;
 
-        const progress = document.getElementById("progressbar");
-        const helpMessage = document.getElementById("helpmessage");
-        helpMessage.innerHTML = "Fill the required fields, and click PROCESS PRODUCT!" + "<br>" + " After processing all products, click download to get a file.";
-        let prev_message = helpMessage.innerHTML;
-        const titleText = document.getElementById("products_title");
-        const productsCountText = document.getElementById("products_count");
-        const filename = document.getElementById("filenamebox");
+      const progress = document.getElementById("progressbar");
+      const helpMessage = document.getElementById("helpmessage");
+      helpMessage.innerHTML =
+        "Fill the required fields, and click PROCESS PRODUCT!" +
+        "<br>" +
+        " After processing all products, click download to get a file.";
+      let prev_message = helpMessage.innerHTML;
+      const titleText = document.getElementById("products_title");
+      const productsCountText = document.getElementById("products_count");
+      const filename = document.getElementById("filenamebox");
 
-        const applianceSelection = document.getElementById("appliancetype");
-        let selectedAppliance = applianceSelection.value;
-        const applianceText = document.getElementById("appliance_text");
+      const applianceSelection = document.getElementById("appliancetype");
+      let selectedAppliance = applianceSelection.value;
+      const applianceText = document.getElementById("appliance_text");
 
-        const URLbox = document.getElementById("urlbox");
-        const url_text = document.getElementById("url_text");
+      const URLbox = document.getElementById("urlbox");
+      const url_text = document.getElementById("url_text");
 
-        const process_button = document.getElementById("process_button");
+      const process_button = document.getElementById("process_button");
 
-        const download_button = document.getElementById("download_button");
+      const download_button = document.getElementById("download_button");
+      updateHoverMessages(isHoverOn);
+      timeoutID = 0;
+
+      hover_instructions.addEventListener("change", () => {
+        isHoverOn = hover_instructions.checked;
         updateHoverMessages(isHoverOn);
-        timeoutID = 0;
+      });
 
-        hover_instructions.addEventListener("change", () => {
-            isHoverOn = hover_instructions.checked;
-            updateHoverMessages(isHoverOn);
-        });
+      function updateHoverMessages(isHoverOn) {
+        onHover(
+          download_button,
+          isHoverOn,
+          "Click it after all your needed products are processed. You will get the option to set the file name and receive a file with all the information." +
+            "<br>" +
+            "The default file name is 'Appliance Type_Date, but feel free to change it. All files would be downloaded as .csv."
+        );
+        onHover(
+          process_button,
+          isHoverOn,
+          "Gathers all the details from the Amazon page." +
+            "<br>" +
+            "- After finishing one link, a message would appear, prompting you to enter another link if needed."
+        );
+        onHover(
+          URLbox,
+          isHoverOn,
+          "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)"
+        );
+        onHover(
+          url_text,
+          isHoverOn,
+          "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)"
+        );
+        onHover(
+          applianceSelection,
+          isHoverOn,
+          "Make sure to select the correct appliance type from the selector." +
+            "<br>" +
+            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+            "<br>" +
+            "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc."
+        );
+        onHover(
+          applianceText,
+          isHoverOn,
+          "Make sure to select the correct appliance type from the selector." +
+            "<br>" +
+            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+            "<br>" +
+            "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc."
+        );
+        onHover(
+          progress,
+          isHoverOn,
+          "This progress bar fills out as the product is being processed."
+        );
+        onHover(
+          hover_instructions,
+          isHoverOn,
+          "Instructions will show when hovering any elements in the left box. They will be shown on the box at the bottom of the screen."
+        );
+      }
 
-        function updateHoverMessages(isHoverOn) {
-            onHover(download_button, isHoverOn, "Click it after all your needed products are processed. You will get the option to set the file name and receive a file with all the information." + "<br>" +
-                "The default file name is 'Appliance Type_Date, but feel free to change it. All files would be downloaded as .csv.");
-            onHover(process_button, isHoverOn, "Gathers all the details from the Amazon page." +
-                "<br>" +
-                "- After finishing one link, a message would appear, prompting you to enter another link if needed.");
-            onHover(URLbox, isHoverOn, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
-            onHover(url_text, isHoverOn, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
-            onHover(applianceSelection, isHoverOn, "Make sure to select the correct appliance type from the selector." +
-                "<br>" +
-                "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
-                "<br>" +
-                "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc.");
-            onHover(applianceText, isHoverOn, "Make sure to select the correct appliance type from the selector." +
-                "<br>" +
-                "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
-                "<br>" +
-                "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc.");
-            onHover(progress, isHoverOn, "This progress bar fills out as the product is being processed.")
-            onHover(hover_instructions, isHoverOn, "Instructions will show when hovering any of the elements in the left box. They will be shown on the box at the bottom of the screen.")
+      function onHover(e, isHoverOn, text_enter) {
+        if (isHoverOn) {
+          e.addEventListener("mouseenter", function () {
+            helpMessage.style.backgroundColor = "#4FA90E";
+            helpMessage.innerHTML = text_enter;
+          });
+          e.addEventListener("mouseleave", function () {
+            helpMessage.style.backgroundColor = "#c6921a";
+            helpMessage.innerHTML = prev_message;
+          });
+        } else {
+          e.addEventListener("mouseenter", function () {
+            helpMessage.style.backgroundColor = "#c6921a";
+            helpMessage.innerHTML = prev_message;
+          });
+          e.addEventListener("mouseleave", function () {
+            helpMessage.style.backgroundColor = "#c6921a";
+            helpMessage.innerHTML = prev_message;
+          });
+        }
+      }
+
+      function clickedSumbitButton() {
+        selectedAppliance = document.getElementById("appliancetype").value;
+        if (prev_appliance != selectedAppliance) {
+          has_headers = 0;
+          prev_appliance = selectedAppliance;
         }
 
-        function onHover(e, isHoverOn, text_enter) {
-            if (isHoverOn) {
-                e.addEventListener("mouseenter", function () {
-                    helpMessage.style.backgroundColor = "#4FA90E";
-                    helpMessage.innerHTML = text_enter;
-                });
-                e.addEventListener("mouseleave", function () {
-                    helpMessage.style.backgroundColor = "#c6921a";
-                    helpMessage.innerHTML = prev_message;
-                });
-            } else {
-                e.addEventListener("mouseenter", function () {
-                    helpMessage.style.backgroundColor = "#c6921a";
-                    helpMessage.innerHTML = prev_message;
-                });
-                e.addEventListener("mouseleave", function () {
-                    helpMessage.style.backgroundColor = "#c6921a";
-                    helpMessage.innerHTML = prev_message;
-                });
+        isValid = true;
+        progress.value = 0;
+        clearTimeout(timeoutID);
+        isDone = false;
+
+        helpMessage.innerHTML =
+          "Running... Please wait until we finish processing this URL before continuing";
+        prev_message =
+          "Running... Please wait until we finish processing this URL before continuing";
+        moveProgressBar();
+        fetch(
+          `/call_function?appliance=${selectedAppliance}&url=${URLbox.value}&countproducts=${count_products}&has_headers=${has_headers}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const filevalues = data[0];
+            const count = data[1];
+            const title = data[2];
+            if (count == "URLError" || filevalues == "not valid") {
+              helpMessage.innerHTML =
+                "Invalid URL. Please enter another URL and make sure it starts with https://www.amazon.com/";
+              prev_message =
+                "Invalid URL. Please enter another URL and make sure it starts with https://www.amazon.com/";
+              isValid = false;
+              progress.value = 0;
+              URLbox.value = "";
+              console.log("IN ERROR");
             }
-        }
-
-        function clickedSumbitButton() {
-            selectedAppliance = document.getElementById("appliancetype").value;
-            if (prev_appliance != selectedAppliance) {
-                has_headers = 0;
-                prev_appliance = selectedAppliance;
-            }
-
-            isValid = true;
-            progress.value = 0;
-            clearTimeout(timeoutID);
-            isDone = false;
-
-            helpMessage.innerHTML =
-                "Running... Please wait until we finish processing this URL before continuing";
-            prev_message = "Running... Please wait until we finish processing this URL before continuing";
-            moveProgressBar();
-            fetch(
-                `/call_function?appliance=${selectedAppliance}&url=${URLbox.value}&countproducts=${count_products}&has_headers=${has_headers}`
-            )
-                .then((response) => response.json())
-                .then((data) => {
-                    const filevalues = data[0];
-                    const count = data[1];
-                    const title = data[2];
-                    if (count == "URLError" || filevalues == "not valid") {
-                        helpMessage.innerHTML =
-                            "Invalid URL. Please enter another URL and make sure it starts with https://www.amazon.com/";
-                        prev_message = "Invalid URL. Please enter another URL and make sure it starts with https://www.amazon.com/";
-                        isValid = false;
-                        progress.value = 0;
-                        URLbox.value = "";
-                        console.log("IN ERROR");
-                    }
-                    if (isValid) {
-                        helpMessage.style.backgroundColor = "#e8a320";
-                        helpMessage.innerHTML =
-                            "Finished running." + "<br>" + "Please enter another URL or download the file.";
-                        prev_message = "Finished running." + "<br>" + "Please enter another URL or download the file.";
-                        count_products = parseInt(count);
-                        if (count_products >= 1) {
-                            const download_button = document.getElementById("download_button");
-                            download_button.removeAttribute("disabled");
-                        }
-                        isDone = true;
-                        allData += "\n" + filevalues;
-                        document.getElementById('middlecol').appendChild(Object.assign(document.createElement("a"), { href: URLbox.value, textContent: title, style: "color: white; font-size: small;", target: "_blank" }));
-                        document.getElementById('middlecol').appendChild(Object.assign(document.createElement("br")));
-                        // all_titles = title + "<br>" + "<br>" + all_titles;
-                        productsCountText.innerHTML = "Count: " + count_products;
-                        // titleText.innerHTML = all_titles;
-                        if (has_headers == 0) {
-                            has_headers = 1;
-                        }
-                        URLbox.value = "";
-                    }
-
-                });
-        }
-
-        function enterFileName() {
-            download_button.style.display = "none";
-            let filetext = document.getElementById("askforfile");
-            filename.type = "text";
-            filetext.style.display = "block";
-            if (filename.value === undefined || filename.value === "") {
-                const now = new Date();
-                const datetime = now.toLocaleDateString();
-                filename.value = selectedAppliance + "_" + datetime;
-            }
-            let actual_download = document.getElementById("actual_download");
-            actual_download.style.display = "block";
-        }
-
-        function downloadFile() {
-            // download file
-            const file = new Blob([allData], { type: "text/csv" });
-            const fileinfo = URL.createObjectURL(file);
-            const a = document.createElement("a");
-            a.href = fileinfo;
-            a.download = filename.value;
-            a.click();
-            URL.revokeObjectURL(fileinfo);
-        }
-
-        function moveProgressBar() {
-            let progressMax = parseInt(progress.max);
-            let progressValue = parseInt(progress.value);
             if (isValid) {
-                if (!isDone) {
-                    if (progressValue < progressMax) {
-                        progress.value += 20;
-                    } else {
-                        progress.value = 0;
-                    }
-                } else {
-                    progress.value = progressMax;
-                }
+              helpMessage.style.backgroundColor = "#e8a320";
+              helpMessage.innerHTML =
+                "Finished running." +
+                "<br>" +
+                "Please enter another URL or download the file.";
+              prev_message =
+                "Finished running." +
+                "<br>" +
+                "Please enter another URL or download the file.";
+              count_products = parseInt(count);
+              if (count_products >= 1) {
+                const download_button =
+                  document.getElementById("download_button");
+                download_button.removeAttribute("disabled");
+              }
+              isDone = true;
+              allData += "\n" + filevalues;
+              document.getElementById("middlecol").appendChild(
+                Object.assign(document.createElement("a"), {
+                  href: URLbox.value,
+                  textContent: title,
+                  style: "color: white; font-size: small;",
+                  target: "_blank",
+                })
+              );
+              document
+                .getElementById("middlecol")
+                .appendChild(Object.assign(document.createElement("br")));
+              // all_titles = title + "<br>" + "<br>" + all_titles;
+              productsCountText.innerHTML = "Count: " + count_products;
+              // titleText.innerHTML = all_titles;
+              if (has_headers == 0) {
+                has_headers = 1;
+              }
+              URLbox.value = "";
             }
-            timeoutID = setTimeout(moveProgressBar, 1000);
+          });
+      }
+
+      function enterFileName() {
+        download_button.style.display = "none";
+        let filetext = document.getElementById("askforfile");
+        filename.type = "text";
+        filetext.style.display = "block";
+        if (filename.value === undefined || filename.value === "") {
+          const now = new Date();
+          const datetime = now.toLocaleDateString();
+          filename.value = selectedAppliance + "_" + datetime;
         }
+        let actual_download = document.getElementById("actual_download");
+        actual_download.style.display = "block";
+      }
 
-        let isInstructionShown = false;
-        function clickedInstructionsButton() {
-            isInstructionShown = !isInstructionShown;
-            let instructions_button = document.getElementById(
-                "instructions_button"
-            );
-            let instructions_text = document.getElementById("instructions_text");
+      function downloadFile() {
+        // download file
+        const file = new Blob([allData], { type: "text/csv" });
+        const fileinfo = URL.createObjectURL(file);
+        const a = document.createElement("a");
+        a.href = fileinfo;
+        a.download = filename.value;
+        a.click();
+        URL.revokeObjectURL(fileinfo);
+      }
 
-            if (isInstructionShown) {
-                instructions_button.textContent = "Close Instructions";
-                instructions_text.innerHTML =
-                    "This page helps you get information of Amazon products faster!" + "<br>" +
-                    "Instead of manually looking through the Amazon product page, this program automatically looks through the page and returns a file with all the needed details." +
-                    "<div><br>" +
-                    "APPLIANCE TYPE:" +
-                    "<div>" +
-                    "Make sure to select the correct appliance type from the selector." +
-                    "<div>" +
-                    "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
-                    "<div>" +
-                    "However, some have additional details. For examples, 'lamps', also have information about the bulb shape, lumens, etc." +
-                    "<div><br>" +
-                    "URL: " +
-                    "<div>" +
-                    "Copy/paste the full URL of the product (should start with https://www.amazon.com/)" +
-                    "<div><br>" +
-                    "BUTTONS: " +
-                    "<div>" +
-                    "- PROCESS PRODUCT: after entering all the fields (appliance type + URL), click this button to gather all the details from the product page" +
-                    "<div>" +
-                    "- After finishing one link, a message would appear, prompting you to enter another link if needed." +
-                    "<div>" +
-                    "- DOWNLOAD - click it after processing all your needed products (can look at the right-hand side of the screen to see the list). Click it to set the file name and to receive a file with all the information." +
-                    "<div><br>" +
-                    "FILE NAME: " +
-                    "<div>" +
-                    "- The default name is 'Appliance Type_Date'." +
-                    "<div>" +
-                    "- Feel free to change it. For example, you can type in 'lamp research' or 'lamp_research.csv'. All files would be .csv at the end." +
-                    "<div><br>" +
-                    "* The program runs without human supervision, and sometimes mistakes could occur, if something seems wrong, make sure to double check the Amazon page." + "<div>" +
-                    "* Right now, we cannot check if the product is available for sale in CA.";
+      function moveProgressBar() {
+        let progressMax = parseInt(progress.max);
+        let progressValue = parseInt(progress.value);
+        if (isValid) {
+          if (!isDone) {
+            if (progressValue < progressMax) {
+              progress.value += 20;
             } else {
-                instructions_button.textContent = "Open Instructions";
-                instructions_text.innerHTML = "";
+              progress.value = 0;
             }
+          } else {
+            progress.value = progressMax;
+          }
         }
-    </script>
-</body>
+        timeoutID = setTimeout(moveProgressBar, 1000);
+      }
 
+      let isInstructionShown = false;
+      function clickedInstructionsButton() {
+        isInstructionShown = !isInstructionShown;
+        let instructions_button = document.getElementById(
+          "instructions_button"
+        );
+        let instructions_text = document.getElementById("instructions_text");
+
+        if (isInstructionShown) {
+          instructions_button.textContent = "Close Instructions";
+          instructions_text.innerHTML =
+            "This page helps you get information on Amazon products faster!" +
+            "<br>" +
+            "Instead of manually looking through the Amazon product page, this program automatically looks through the page and returns a file with all the needed details." +
+            "<div><br>" +
+            "APPLIANCE TYPE:" +
+            "<div>" +
+            "Make sure to select the correct appliance type from the selector." +
+            "<div>" +
+            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+            "<div>" +
+            "However, some have additional details. For example, 'lamps' also have information about the bulb shape, lumens, etc." +
+            "<div><br>" +
+            "URL: " +
+            "<div>" +
+            "Copy/paste the full URL of the product (should start with https://www.amazon.com/)" +
+            "<div><br>" +
+            "BUTTONS: " +
+            "<div>" +
+            "- PROCESS PRODUCT: after entering all the fields (appliance type + URL), click this button to gather all the details from the product page." +
+            "<div>" +
+            "- After finishing one link, a message would appear, prompting you to enter another link if needed." +
+            "<div>" +
+            "- DOWNLOAD - click it after processing all your needed products (you can look at the right-hand side of the screen to see the list). This would let you set the file name and receive a file with all the information." +
+            "<div><br>" +
+            "FILE NAME: " +
+            "<div>" +
+            "- The default name is 'Appliance Type_Date.'" +
+            "<div>" +
+            "- Feel free to change it. For example, 'lamp research' or 'lamp_research.csv.' All files would be .csv at the end." +
+            "<div><br>" +
+            "* The program runs without human supervision, and sometimes mistakes could occur; if something seems wrong, double-check the Amazon page." +
+            "<div>" +
+            "* Right now, we cannot check if the product is available for sale in CA.";
+        } else {
+          instructions_button.textContent = "Open Instructions";
+          instructions_text.innerHTML = "";
+        }
+      }
+    </script>
+  </body>
 </html>
