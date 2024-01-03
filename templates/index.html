@@ -59,19 +59,14 @@
             <div><br></div>
             <progress id="progressbar" value="0" max="200" style="width: 400px; background-color: #4FA90E;"></progress>
             <div><br></div>
+            <button disabled id="download_button" onclick="enterFileName()">Download</button>
+            <p style="display:none" id="askforfile">Enter File Name:</p>
+            <input type="hidden" id="filenamebox" placeholder="amazon data" style="width: 400px" />
+            <button style="display:none" id="actual_download" onclick="downloadFile()">Download File</button>
+            <div><br></div>
             <div id="helpmessage"
                 style="background-color: #c6921a; padding: 10px; border-radius: 20px; align-items: center; justify-content: center; display: flex;">
             </div>
-            <div><br></div>
-            <div style="flex-direction: row;  align-items: center; justify-content: flex-start; display: flex;">
-                <div id="download_text">Download Details</div>
-                <div style="margin-left: 20px"></div>
-                <button disabled id="download_button" onclick="enterFileName()">Download</button>
-            </div>
-            <p style="display:none" id="askforfile">Enter File Name:</p>
-            <input type="hidden" id="filenamebox" placeholder="amazon data" style="width: 400px" />
-            <div><br></div>
-            <button style="display:none" id="actual_download" onclick="downloadFile()">Download File</button>
         </div>
         <div style="margin-left: 20px"></div>
         <div id="middlecol"
@@ -138,15 +133,14 @@
             "- After finishing one link, a message would appear, prompting you to enter another link if needed.");
 
         const download_button = document.getElementById("download_button");
-        const download_text = document.getElementById("download_text");
-        onHover(download_text, "Click it after all of your needed products are processed. You will get the option to set the file name and receieve a file with all the information." + "<br>" +
+        onHover(download_button, "Click it after all of your needed products are processed. You will get the option to set the file name and receieve a file with all the information." + "<br>" +
             "The default file name is 'Appliance Type_Date, but feel free to change it. All files would be downloaded as .csv.");
         timeoutID = 0;
 
 
         function onHover(e, text_enter) {
             e.addEventListener("mouseenter", function () {
-                helpMessage.style.backgroundColor = "#27c01f";
+                helpMessage.style.backgroundColor = "#4FA90E";
                 helpMessage.innerHTML = text_enter;
             });
             e.addEventListener("mouseleave", function () {
