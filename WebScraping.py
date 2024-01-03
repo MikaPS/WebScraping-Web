@@ -3296,11 +3296,12 @@ def get_data_from_table(table, table_data):
             # For each row in the second column, find the value and pair it with the coraspponding value in col1
             for c in col2:
                 values = c.find('td')  # value of the second col
-                val = values.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
-                # in case they write Brand Name instead of Brand or something along these lines
-                if (row < len(col1)):
-                    specific_data_from_table(table_data, col1[row], val)
-                    row += 1
+                if values:
+                    val = values.text.replace('\u200e', '').replace(",", " ").strip() # removing the \u200e that appears in the beg of every value
+                    # in case they write Brand Name instead of Brand or something along these lines
+                    if (row < len(col1)):
+                        specific_data_from_table(table_data, col1[row], val)
+                        row += 1
         # Second table format doesn't have th
         else:
             for c in col2:
@@ -3457,9 +3458,9 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     prod_title = get_title(item_convert_to_html)
     
     # --- For Sale in CA ---
-    item_ca = for_sale_in_ca(item_convert_to_html)
-    if (all_data["price"] == "N/A"):
-        item_ca = "N/A"
+    # item_ca = for_sale_in_ca(item_convert_to_html)
+    # if (all_data["price"] == "N/A"):
+    #     item_ca = "N/A"
     
     # --- PRODUCT INFORMATION DETAILS ---
     # Convert specification table into a dict     
@@ -3552,29 +3553,30 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     # --- ROOM AC ---
     if item_appliance.lower() == "room ac":
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            # title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_volt = special_appliances(table_data, "Voltage", True)
         item_watt = special_appliances(table_data, "Wattage", True)
         item_cooling = special_appliances(table_data, "Cooling Power", False)
         item_current = special_appliances(table_data, "Current Rating", False)
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_current}, {item_cooling}, {item_watt}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_current}, {item_cooling}, {item_watt}, , {all_data['asin']}, {all_data['price']}, {URL}, "
     # --- CENTRAL AC ---
     elif item_appliance.lower() == "central ac":
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Voltage,Energy Efficiency Ration (EER),Electric Input @95° (Watts),Cooling Capacity @95° (BTUH),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Voltage,Energy Efficiency Ration (EER),Electric Input @95° (Watts),Cooling Capacity @95° (BTUH),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_volt = special_appliances(table_data, "Voltage", True)
         item_watt = special_appliances(table_data, "Wattage", True)
         item_capacity = special_appliances(table_data, "Cooling Power", True)
         item_seer = special_appliances(table_data, "Seasonal Energy Efficiency Ratio (SEER)", True)
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_seer}, {item_watt}, {item_capacity}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volt}, {item_seer}, {item_watt}, {item_capacity}, , {all_data['asin']}, {all_data['price']}, {URL}, "
     # --- WATER HEATERS ---
     elif item_appliance.lower() == "water heaters":
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Volume,Max gal/min,Input Rating,Annual Fossil Fuel Energy Consumption,Certified to MAEDbS,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Volume,Max gal/min,Input Rating,Annual Fossil Fuel Energy Consumption,Certified to MAEDbS,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_volume = special_appliances(table_data, "Size", False) # rated volume, in gallons
         item_consumption = special_appliances(table_data, "Flow Rate", True) # Max gal/min
@@ -3586,28 +3588,28 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         if (item_fossil != "N/A" or item_volume != "N/A"):
             item_note = "Rated volume is based on the value under \"Size\" and Fossil energy consumption is based on the value under \"Heat Output\". Most companies put the right info but please make sure that the value is in the correct units."
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volume}, {item_consumption}, {item_input}, {item_fossil}, {item_note}, {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_volume}, {item_consumption}, {item_input}, {item_fossil}, {item_note}, {all_data['asin']}, {all_data['price']}, {URL}, "
     # --- PLUMBING FITTINGS ---
     elif item_appliance.lower() == "plumbing fittings":
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Series Name,Appliance Type,Advertised Flow Rate,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Series Name,Appliance Type,Advertised Flow Rate,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_series = "N/A" # Series name (if applicable)
         item_flow_rate = special_appliances(table_data, "Flow Rate", True) # Advertised Flow Rate
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_series}, {item_appliance.title()}, {item_flow_rate}, ,{all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_series}, {item_appliance.title()}, {item_flow_rate}, ,{all_data['asin']}, {all_data['price']}, {URL}, "
     # --- PLUMBING FIXTURES ---
     elif item_appliance.lower() == "plumbing fixtures":
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Flow Rate (GPF),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Flow Rate (GPF),Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_flow_rate = special_appliances(table_data, "Water Consumption", True) # Flow Rate (GPF)
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_flow_rate}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {item_flow_rate}, , {all_data['asin']}, {all_data['price']}, {URL}, "
     # --- LAMPS ---
     elif item_appliance.lower() == "lamps":        
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Base Type,Bulb Shape,Lumens,Watts,Color Term,Life,CRI,Lumens/watt,Efficacy,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Base Type,Bulb Shape,Lumens,Watts,Color Term,Life,CRI,Lumens/watt,Efficacy,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         lamp_base = special_appliances(table_data, "Base Material", False)
         lamp_bulb = special_appliances(table_data, "Bulb Shape Size", False)
@@ -3634,13 +3636,13 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         if lamp_lum_wat != "N/A" and lamp_cri != "N/A":
             lamp_compliance = round(2.3 * float(lamp_lum_wat) + float(lamp_cri), 2)
         if isFirstAttempt == False:
-           sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {lamp_base}, {lamp_bulb}, {lamp_lum}, {lamp_watt}, {lamp_temp}, {lamp_life}, {lamp_cri}, {lamp_lum_wat}, {lamp_compliance}, , {all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+           sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, {lamp_base}, {lamp_bulb}, {lamp_lum}, {lamp_watt}, {lamp_temp}, {lamp_life}, {lamp_cri}, {lamp_lum_wat}, {lamp_compliance}, , {all_data['asin']}, {all_data['price']}, {URL}, "
     else: 
         if isFileEmpty(has_headers):
-            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
+            title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title   
         if isFirstAttempt == False:
-            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, ,{all_data['asin']}, {all_data['price']}, {URL}, , {item_ca}"
+            sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, ,{all_data['asin']}, {all_data['price']}, {URL}, "
     item_webpage.close()
     if (isFirstAttempt):
         sleep(0.5)
