@@ -8,10 +8,19 @@
 </head>
 
 <body style="color: white; background-color: #014675">
-    <h1 style="text-align: center">Amazon Lead Research Assistant</h1>
+    <div id="upperarea" style="align-items: flex-start; justify-content: center; display: flex; flex-direction: row;">
+        <div style="flex: 0.1; padding: 15px;">
+            <input checked type="checkbox" id="hover_instructions" value="true">
+            <label for="hover_instructions"> Toggle hover instructions </label><br>
+        </div>
+        <div style="margin-left: 240px"></div>
+        <div style="flex: 0.9; padding: 10px;">
+            <h1 style="text-align: flex-start">Amazon Lead Research Assistant</h1>
+        </div>
+    </div>
     <div style="display: flex">
         <div style="flex: 0.5; padding: 15px; border: 1px solid #f1c063; border-radius: 20px;">
-            <p id="appliance_text">Select appliance type:</p>
+            <p id="appliance_text">Select an appliance type:</p>
             <select id="appliancetype" style="width: 400px">
                 <option value="Refrigerators">Refrigerators</option>
                 <option value="Room AC">Room AC</option>
@@ -51,8 +60,8 @@
                 </option>
                 <option value="Other">Other</option>
             </select>
-            <p id="url_text">Enter URL of an Amazon product page:</p>
-            <input type="text" id="urlbox" placeholder="Enter URL" style="width: 400px" />
+            <p id="url_text">Enter a URL of an Amazon product page:</p>
+            <input type="text" id="urlbox" placeholder="Enter a URL" style="width: 400px" />
             <br />
             <br />
             <button id="process_button" onclick="clickedSumbitButton()">Process Product</button>
@@ -75,7 +84,7 @@
             <div style="flex-direction: row;  align-items: flex-start; justify-content: center; display: flex;">
                 <p> <b> Links of Processed Products </b></p>
                 <div style="margin-left: 30px"></div>
-                <p id="products_count"> Count: 0 </p>
+                <p id="products_count" style="align-items: flex-end;"> Count: 0 </p>
             </div>
             <p id="products_title" style="font-size: small;"></p>
         </div>
@@ -99,54 +108,77 @@
         let all_titles = "";
         let prev_appliance = "";
 
+        const hover_instructions = document.getElementById("hover_instructions");
+        let isHoverOn = hover_instructions.checked;
+
         const progress = document.getElementById("progressbar");
-        onHover(progress, "This progress bar fills out as the product is being processed.")
         const helpMessage = document.getElementById("helpmessage");
         helpMessage.innerHTML = "Fill the required fields, and click PROCESS PRODUCT!" + "<br>" + " After processing all products, click download to get a file.";
         let prev_message = helpMessage.innerHTML;
         const titleText = document.getElementById("products_title");
         const productsCountText = document.getElementById("products_count");
-        let filename = document.getElementById("filenamebox");
+        const filename = document.getElementById("filenamebox");
 
-        let applianceSelection = document.getElementById("appliancetype");
+        const applianceSelection = document.getElementById("appliancetype");
         let selectedAppliance = applianceSelection.value;
-        let applianceText = document.getElementById("appliance_text");
-        onHover(applianceSelection, "Make sure to select the correct appliance type from the selector." +
-            "<br>" +
-            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
-            "<br>" +
-            "However, some have additional, specific details. For examples, 'lamps', also have info about the bulb shape, lumens, etc.");
-        onHover(applianceText, "Make sure to select the correct appliance type from the selector." +
-            "<br>" +
-            "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
-            "<br>" +
-            "However, some have additional, specific details. For examples, 'lamps', also have info about the bulb shape, lumens, etc.");
+        const applianceText = document.getElementById("appliance_text");
 
         const URLbox = document.getElementById("urlbox");
         const url_text = document.getElementById("url_text");
-        onHover(URLbox, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
-        onHover(url_text, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
 
         const process_button = document.getElementById("process_button");
-        onHover(process_button, "Gathers all the details from the Amazon page." +
-            "<br>" +
-            "- After finishing one link, a message would appear, prompting you to enter another link if needed.");
 
         const download_button = document.getElementById("download_button");
-        onHover(download_button, "Click it after all of your needed products are processed. You will get the option to set the file name and receieve a file with all the information." + "<br>" +
-            "The default file name is 'Appliance Type_Date, but feel free to change it. All files would be downloaded as .csv.");
+        updateHoverMessages(isHoverOn);
         timeoutID = 0;
 
+        hover_instructions.addEventListener("change", () => {
+            isHoverOn = hover_instructions.checked;
+            updateHoverMessages(isHoverOn);
+        });
 
-        function onHover(e, text_enter) {
-            e.addEventListener("mouseenter", function () {
-                helpMessage.style.backgroundColor = "#4FA90E";
-                helpMessage.innerHTML = text_enter;
-            });
-            e.addEventListener("mouseleave", function () {
-                helpMessage.style.backgroundColor = "#c6921a";
-                helpMessage.innerHTML = prev_message;
-            });
+        function updateHoverMessages(isHoverOn) {
+            onHover(download_button, isHoverOn, "Click it after all your needed products are processed. You will get the option to set the file name and receive a file with all the information." + "<br>" +
+                "The default file name is 'Appliance Type_Date, but feel free to change it. All files would be downloaded as .csv.");
+            onHover(process_button, isHoverOn, "Gathers all the details from the Amazon page." +
+                "<br>" +
+                "- After finishing one link, a message would appear, prompting you to enter another link if needed.");
+            onHover(URLbox, isHoverOn, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
+            onHover(url_text, isHoverOn, "Copy/paste the full URL of your Amazon product page (should start with https://www.amazon.com/)");
+            onHover(applianceSelection, isHoverOn, "Make sure to select the correct appliance type from the selector." +
+                "<br>" +
+                "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+                "<br>" +
+                "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc.");
+            onHover(applianceText, isHoverOn, "Make sure to select the correct appliance type from the selector." +
+                "<br>" +
+                "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
+                "<br>" +
+                "However, some have additional details. For example, 'lamps', also have info about the bulb shape, lumens, etc.");
+            onHover(progress, isHoverOn, "This progress bar fills out as the product is being processed.")
+            onHover(hover_instructions, isHoverOn, "Instructions will show when hovering any of the elements in the left box. They will be shown on the box at the bottom of the screen.")
+        }
+
+        function onHover(e, isHoverOn, text_enter) {
+            if (isHoverOn) {
+                e.addEventListener("mouseenter", function () {
+                    helpMessage.style.backgroundColor = "#4FA90E";
+                    helpMessage.innerHTML = text_enter;
+                });
+                e.addEventListener("mouseleave", function () {
+                    helpMessage.style.backgroundColor = "#c6921a";
+                    helpMessage.innerHTML = prev_message;
+                });
+            } else {
+                e.addEventListener("mouseenter", function () {
+                    helpMessage.style.backgroundColor = "#c6921a";
+                    helpMessage.innerHTML = prev_message;
+                });
+                e.addEventListener("mouseleave", function () {
+                    helpMessage.style.backgroundColor = "#c6921a";
+                    helpMessage.innerHTML = prev_message;
+                });
+            }
         }
 
         function clickedSumbitButton() {
@@ -222,7 +254,6 @@
             actual_download.style.display = "block";
         }
 
-
         function downloadFile() {
             // download file
             const file = new Blob([allData], { type: "text/csv" });
@@ -262,7 +293,8 @@
             if (isInstructionShown) {
                 instructions_button.textContent = "Close Instructions";
                 instructions_text.innerHTML =
-                    "This page helps you get information from Amazon products faster!" +
+                    "This page helps you get information of Amazon products faster!" + "<br>" +
+                    "Instead of manually looking through the Amazon product page, this program automatically looks through the page and returns a file with all the needed details." +
                     "<div><br>" +
                     "APPLIANCE TYPE:" +
                     "<div>" +
@@ -270,25 +302,25 @@
                     "<div>" +
                     "Appliance types have shared details (brand, manufacturer, ship from, sold by, ASIN, price)." +
                     "<div>" +
-                    "However, some have additional, specific details. For examples, 'lamps', also have info about the bulb shape, lumens, etc." +
+                    "However, some have additional details. For examples, 'lamps', also have information about the bulb shape, lumens, etc." +
                     "<div><br>" +
                     "URL: " +
                     "<div>" +
-                    "Copy/paste the full URL (should start with https://)" +
+                    "Copy/paste the full URL of the product (should start with https://www.amazon.com/)" +
                     "<div><br>" +
                     "BUTTONS: " +
                     "<div>" +
-                    "- PROCESS PRODUCT: after entering all the fields, click this button to gather all the details from the page and start a progress bar" +
+                    "- PROCESS PRODUCT: after entering all the fields (appliance type + URL), click this button to gather all the details from the product page" +
                     "<div>" +
                     "- After finishing one link, a message would appear, prompting you to enter another link if needed." +
                     "<div>" +
-                    "- DOWNLOAD - click it after finishing all of your needed products. Click it to set the file name and receieve a file with all the information." +
+                    "- DOWNLOAD - click it after processing all your needed products (can look at the right-hand side of the screen to see the list). Click it to set the file name and to receive a file with all the information." +
                     "<div><br>" +
                     "FILE NAME: " +
                     "<div>" +
-                    "- The default name is 'Appliance Type_Date'" +
+                    "- The default name is 'Appliance Type_Date'." +
                     "<div>" +
-                    "- Feel free to change it. For example, you can type in 'lamp_research' or 'lamp_research.csv'. All files would be .csv at the end." +
+                    "- Feel free to change it. For example, you can type in 'lamp research' or 'lamp_research.csv'. All files would be .csv at the end." +
                     "<div><br>" +
                     "* The program runs without human supervision, and sometimes mistakes could occur, if something seems wrong, make sure to double check the Amazon page." + "<div>" +
                     "* Right now, we cannot check if the product is available for sale in CA.";
