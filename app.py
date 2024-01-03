@@ -12,12 +12,11 @@ def call_function():
     appliance_type = request.args.get('appliance')
     count_products = int(request.args.get('countproducts'))
     url = request.args.get('url')
-    print(url)
-    print("part: ", url[0:23])
     if (url[0:23] != "https://www.amazon.com/"): 
-        print("error in app.py")
+        print("problem with URL app.py")
         return make_response(jsonify(["URLError", "URLError", "URLError"]))
     data, result, title = handle_csv(url, appliance_type, count_products, True, has_headers)
+    print("in app.py: ", data, result, title)
     # save values to a file
     response = make_response(jsonify([data, result, title]))
     return response

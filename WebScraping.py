@@ -3415,8 +3415,6 @@ def isFileEmpty(has_headers):
 
 # After getting a URL, we can get values from the page
 all_data = {}
-prod_title = ""
-sent_data = [[],[]]
 def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers):
     # Sessions help to maintain a consistent user expereinces. It saves cookies across requests, making it more efficent to connect to Amazon
     session = requests.Session()
@@ -3436,6 +3434,7 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         all_data["price"] = "N/A"
         all_data["asin"] = "N/A"
         all_data["price_per_unit"] = "N/A"
+        all_data["prod_title"] = "N/A"
         # Wants to switch the connection every 5 products:
         if (count_products % 5 == 0):
             session.close()
@@ -3447,15 +3446,22 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
 
     # Getting data from the item's page in Bytes
     item_webpage = session.get(URL, allow_redirects=True)
+    print("URL: ", item_webpage.url)
     # Converting it to html style so we can use the values
     item_convert_to_html = BeautifulSoup(item_webpage.content, "html.parser")
 
     # --- PRICE --- 
     if (all_data["price"] == "N/A"):
+        print("GETTING PRICE")
         item_price = price(item_convert_to_html)
         all_data["price"] = item_price
+        print(all_data["price"])
 
-    prod_title = get_title(item_convert_to_html)
+    if (all_data["prod_title"] == "N/A"):
+        all_data["prod_title"] = get_title(item_convert_to_html)
+        print("GETTING TITLE")
+        print(all_data["prod_title"])
+
     
     # --- For Sale in CA ---
     # item_ca = for_sale_in_ca(item_convert_to_html)
@@ -3512,6 +3518,7 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     if (all_data["brand"] == "N/A"):
         item_brand = special_appliances(table_data, "Brand", False)
         all_data["brand"] = item_brand
+    print("FINISHED TABLES")
     # Calculates price per item
     item_number = special_appliances(table_data, "Unit Count", True)
     if item_number != "N/A" and all_data["price_per_unit"] == "N/A":
@@ -3646,7 +3653,9 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     item_webpage.close()
     if (isFirstAttempt):
         sleep(0.5)
+        print("FIRST RETURN")
         return handle_csv(URL, item_appliance, count_products, False, has_headers)
     else:   
-        return sent_text, count_products, prod_title
+        print("ACTUAL RETURN: ", sent_text, count_products, all_data["prod_title"])
+        return sent_text, count_products, all_data["prod_title"]
 
