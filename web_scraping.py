@@ -1,15 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
-from requests.adapters import HTTPAdapter, Retry
-
 from unidecode import unidecode
 from time import sleep
 from user_agents import data
 import random
 
-with open("./proxies/valid_proxies.txt", "r") as f:
-    proxies = f.read().split("\n")
-random.shuffle(proxies)
 # Use a "User Agent" so the computer would register as a human
 # Data includes 3000+ variations of user agents so we can select a random user agent everytime the program runs, stimulating different devices and browsers 
 # The list includes users from: 
@@ -23,8 +18,6 @@ def set_headers(user_agent):
         'User-Agent': user_agent,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     }
-# use 'X-Forwarded-For':'xxx.xxx.x.x' of a CA address
-
 random_user_agent = random.choice(data)
 HEADERS = set_headers(random_user_agent)
 
@@ -97,6 +90,7 @@ def price(item_convert_to_html):
         item_price = "N/A"
     return item_price
 
+# returns the title of the product
 def get_title(item_convert_to_html):
     try:
         item_title = item_convert_to_html.find("span", attrs={"id": "productTitle"})
@@ -105,6 +99,7 @@ def get_title(item_convert_to_html):
         item_title = "N/A"
     return remove_non_ascii(item_title)
 
+# NOTE: NOT IN USE since we cannot set the Amazon location to CA.
 # Using the values from handle_csv, returns if the item is for sale in CA
 def for_sale_in_ca(item_convert_to_html):
     item_ca = "N/A"
@@ -119,7 +114,6 @@ def for_sale_in_ca(item_convert_to_html):
             item_ca = "Yes"
     except AttributeError:
         item_ca = "Yes"
-    
     return item_ca
 
 # Using the values from handle_csv, returns the ASIN
@@ -151,7 +145,6 @@ def ship_from_sold_by(item_convert_to_html):
     # Found in a grid where the right side of the grid (the data we want) is under the following tag. Need only the first two rows of the grid; the rest is not interesting to us.
     right_grid = item_convert_to_html.findAll("span", attrs={"class": "a-size-small offer-display-feature-text-message"}) # Actual value 
     left_grid = item_convert_to_html.findAll("span", attrs={"class": "a-size-small a-color-tertiary"}) # Title (ship from, sold by)
-    
     # Remove non text values from the grid
     left_grid_text = []
     for item in left_grid:
@@ -218,52 +211,18 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
             HEADERS = set_headers(random_user_agent)
             session.headers.update(HEADERS)
 
-    # Getting data from the item's page in Bytes
-    
-    
-    # retries = Retry(total=5,
-    #             backoff_factor=0.1,
-    #             status_forcelist=[ 500, 502, 503, 504 ])
-
-    # session.mount('https://', HTTPAdapter(max_retries=retries))
-    # count_proxy = 0
-    # while True:
-    #     try:
-    #         proxy = {
-    #             'http': "http://" + proxies[count_proxy],
-    #             'https': "http://" + proxies[count_proxy]
-    #         }
-    #         print("using proxy: ", proxy)
-        #     item_webpage = session.get(URL, allow_redirects=True, proxies=proxy)
-        #     print("did work? ", item_webpage.status_code)
-        #     count_proxy += 1
-        #     break
-        # except:
-        #     count_proxy += 1
-        #     print("looking for a different proxy...")
-    # Converting it to html style so we can use the values
-    # proxy = {
-    #             'http': proxies[count_products],
-    #             'https': proxies[count_products]
-    #         }
-    # print("proxy: ", proxy)
-    item_webpage = session.get(URL, allow_redirects=True)#, verify=False, proxies=proxy)
-    # print("did work? ", item_webpage.status_code)
+    # Getting data from the item's page 
+    item_webpage = session.get(URL, allow_redirects=True)
     item_convert_to_html = BeautifulSoup(item_webpage.content, "html.parser")
 
     # --- PRICE --- 
     if (all_data["price"] == "N/A"):
         item_price = price(item_convert_to_html)
         all_data["price"] = item_price
-    
+    # --- TITLE ---
     if (all_data["prod_title"] == "N/A"):
         all_data["prod_title"] = get_title(item_convert_to_html)
         print(all_data["prod_title"])
-    
-    # --- For Sale in CA ---
-    # item_ca = for_sale_in_ca(item_convert_to_html)
-    # if (all_data["price"] == "N/A"):
-    #     item_ca = "N/A"
     
     # --- PRODUCT INFORMATION DETAILS ---
     # Convert specification table into a dict     
@@ -357,7 +316,6 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     # --- ROOM AC ---
     if item_appliance.lower() == "room ac":
         if isFileEmpty(has_headers):
-            # title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes,For Sale in CA\n"
             title = "Model #,Manufacturing Company,Brand,Ship from,Sold by,Appliance Type,Rated Input,Rated Current,Cooling Capacity,Power Supply,Certified to MAEDbS?,ASIN,Retail Price,Retail Link,Notes\n"
             sent_text += title
         item_volt = special_appliances(table_data, "Voltage", True)
@@ -448,6 +406,7 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
         if isFirstAttempt == False:
             sent_text += f"{all_data['item_model_number']}, {all_data['item_mfr']}, {all_data['brand']}, {all_data['ship_from']}, {all_data['sold_by']}, {item_appliance.title()}, ,{all_data['asin']}, {all_data['price']}, {URL}, "
     item_webpage.close()
+     # attempts to run the program twice since some user agents might not be working and want to make sure we get all the information from Amazon
     if (isFirstAttempt):
         sleep(0.5)
         return handle_csv(URL, item_appliance, count_products, False, has_headers)

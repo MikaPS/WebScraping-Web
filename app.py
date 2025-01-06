@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response, jsonify
-from WebScraping import handle_csv
+from web_scraping import handle_csv
 app = Flask(__name__)
 
 @app.route('/')
@@ -13,10 +13,8 @@ def call_function():
     count_products = int(request.args.get('countproducts'))
     url = request.args.get('url')
     if (url[0:23] != "https://www.amazon.com/"): 
-        print("problem with URL app.py")
         return make_response(jsonify(["URLError", "URLError", "URLError"]))
     data, result, title = handle_csv(url, appliance_type, count_products, True, has_headers)
-    print("in app.py: ", data, result, title)
     # save values to a file
     response = make_response(jsonify([data, result, title]))
     return response
