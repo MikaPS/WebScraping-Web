@@ -182,7 +182,6 @@ def isFileEmpty(has_headers):
 # After getting a URL, we can get values from the page
 all_data = {}
 def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers):
-    print("in handle csv")
     # Sessions help to maintain a consistent user expereinces. It saves cookies across requests, making it more efficent to connect to Amazon
     session = requests.Session()
     # Use a "User Agent" so the computer would register as a human
@@ -222,7 +221,6 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     # --- TITLE ---
     if (all_data["prod_title"] == "N/A"):
         all_data["prod_title"] = get_title(item_convert_to_html)
-        print(all_data["prod_title"])
     
     # --- PRODUCT INFORMATION DETAILS ---
     # Convert specification table into a dict     
@@ -274,7 +272,6 @@ def handle_csv(URL, item_appliance, count_products, isFirstAttempt, has_headers)
     if (all_data["brand"] == "N/A"):
         item_brand = special_appliances(table_data, "Brand", False)
         all_data["brand"] = item_brand
-    print("FINISHED TABLES")
     # Calculates price per item
     item_number = special_appliances(table_data, "Unit Count", True)
     if item_number != "N/A" and all_data["price_per_unit"] == "N/A":
